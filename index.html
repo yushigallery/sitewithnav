@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YUSHI'S WORLD</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #fff;
+    }
+    header {
+      text-align: center;
+      background: #fff;
+      padding: 1em 0;
+      border-bottom: 1px solid #eee;
+    }
+    header img {
+      max-width: 100%;
+      height: auto;
+    }
+    .search-container {
+      text-align: center;
+      padding: 1em;
+    }
+    input[type="text"] {
+      width: 80%;
+      max-width: 400px;
+      padding: 0.5em;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .icon-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5em;
+      margin: 1em 0;
+      flex-wrap: wrap;
+    }
+    .icon-links a {
+      text-align: center;
+      text-decoration: none;
+      color: #333;
+    }
+    .icon-links img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #eee;
+    }
+    details {
+      padding: 1em;
+      border-top: 1px solid #eee;
+    }
+    .section {
+      padding: 1em;
+    }
+    .section h3 {
+      margin-top: 1.5em;
+    }
+    .section ul {
+      padding-left: 1.2em;
+    }
+    .section li {
+      margin: 0.5em 0;
+    }
+    .section a {
+      text-decoration: none;
+      color: #0070f3;
+    }
+
+    .nav-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: #0070f3;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px;
+    }
+    .nav-panel {
+      position: fixed;
+      right: 0;
+      top: 50px;
+      bottom: 0;
+      width: 200px;
+      background: #f8f8f8;
+      overflow-y: auto;
+      border-left: 1px solid #ddd;
+      padding: 1em;
+      display: none;
+      z-index: 999;
+    }
+    .nav-panel a {
+      display: block;
+      margin: 0.3em 0;
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+    }
+    @media screen and (max-width: 600px) {
+      .nav-panel {
+        width: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>YUSHI'S WORLD</h1>
+    <img src="banner.jpg" alt="YUSHI Banner">
+  </header>
+  <div class="search-container">
+    <input type="text" placeholder="请输入关键词..." oninput="filterItems(this.value)">
+  </div>
+  <div class="icon-links">
+    <a href="https://weibo.com/u/7895044498" target="_blank"><img src="weibo.jpg"><br>微博</a>
+    <a href="https://v.douyin.com/h7fixa56lIk/" target="_blank"><img src="douyin.jpg"><br>抖音</a>
+    <a href="https://space.bilibili.com/3546586890111682" target="_blank"><img src="bili.jpg"><br>B站</a>
+    <a href="https://www.xiaohongshu.com/user/profile/63b4696e0000000027037de5" target="_blank"><img src="xiaohongshu.jpg"><br>小红书</a>
+  </div>
+  <details>
+    <summary>YUSHI 简介（点击展开）</summary>
+    <div class="section">
+      <p>姓名：YUSHI（得能勇志；유우시；ユウシ）<br>生日：2004.04.05<br>...<br>生活中必须实现的梦想：世界巡演。</p>
+    </div>
+  </details>
+
+  <button class="nav-toggle" onclick="toggleNav()">目录</button>
+  <div class="nav-panel" id="navPanel"></div>
+  <div class="section" id="contentArea"></div>
+
+  <script src="nav_data.js"></script>
+  <script>
+    const nav = document.getElementById("navPanel");
+    const content = document.getElementById("contentArea");
+
+    function toggleNav() {
+      nav.style.display = nav.style.display === "block" ? "none" : "block";
+    }
+
+    function renderAll() {
+      content.innerHTML = "";
+      nav.innerHTML = "";
+      for (const folder in navData) {
+        const id = folder.replace(/[^a-zA-Z0-9]/g, "_");
+        const header = document.createElement("h3");
+        header.id = id;
+        header.textContent = folder;
+        content.appendChild(header);
+
+        const ul = document.createElement("ul");
+        navData[folder].forEach(item => {
+          const li = document.createElement("li");
+          li.innerHTML = `<a href="${item.url}" target="_blank">${item.title}</a>`;
+          ul.appendChild(li);
+        });
+        content.appendChild(ul);
+
+        const link = document.createElement("a");
+        link.href = "#" + id;
+        link.textContent = folder;
+        nav.appendChild(link);
+      }
+    }
+
+    function filterItems(keyword) {
+      keyword = keyword.toLowerCase();
+      content.innerHTML = "";
+      for (const folder in navData) {
+        const matched = navData[folder].filter(item =>
+          item.title.toLowerCase().includes(keyword)
+        );
+        if (matched.length > 0) {
+          const header = document.createElement("h3");
+          header.textContent = folder;
+          content.appendChild(header);
+          const ul = document.createElement("ul");
+          matched.forEach(item => {
+            const li = document.createElement("li");
+            li.innerHTML = `<a href="${item.url}" target="_blank">${item.title}</a>`;
+            ul.appendChild(li);
+          });
+          content.appendChild(ul);
+        }
+      }
+    }
+
+    window.onload = renderAll;
+  </script>
+</body>
+</html>
